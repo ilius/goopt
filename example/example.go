@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	goopt "github.com/droundy/goopt"
+	goopt "github.com/ilius/goopt"
 )
 
 // The Flag function creates a boolean flag, possibly with a negating

@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 	"strings"
-	goopt "github.com/droundy/goopt"
+	goopt "github.com/ilius/goopt"
 )
 
 var amVerbose = goopt.Flag([]string{"--verbose"}, []string{},
