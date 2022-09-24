@@ -425,6 +425,12 @@ func failnoting(s string, e error) {
 // This is the list of non-flag arguments after processing
 var Args = make([]string, 0, 4)
 
+var helpFlags = []string{"--help", "-h"}
+
+func SetHelpFlags(flags []string) {
+	helpFlags = flags
+}
+
 // This parses the command-line arguments. It returns true if '--' was present.
 // Special flags are:
 //
@@ -437,7 +443,7 @@ var Args = make([]string, 0, 4)
 //	extraopts func() []string     This function is called by --list-options and returns extra options to display
 func Parse(extraopts func() []string) bool {
 	// First we'll add the "--help" option.
-	addOpt(opt{[]string{"--help", "-h"}, "", "Show usage message", false, nil,
+	addOpt(opt{helpFlags, "", "Show usage message", false, nil,
 		func(string) error {
 			fmt.Println(Usage())
 			os.Exit(0)
