@@ -201,9 +201,10 @@ func VisitAllNames(f func(string)) {
 
 // Add a new flag that does not allow arguments
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   help    string            The help text (automatically Expand()ed) to display for this flag
-//   process func() os.Error   The function to call when this flag is processed with no argument
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//	process func() os.Error   The function to call when this flag is processed with no argument
 func NoArg(names []string, help string, process func() error) {
 	addOpt(opt{names, "", help, false, nil, func(s string) error {
 		if s != "" {
@@ -215,20 +216,22 @@ func NoArg(names []string, help string, process func() error) {
 
 // Add a new flag that requires an argument
 // Parameters:
-//   names []string                  These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   argname string                  The name of the argument in help, e.g. the "value" part of "--flag=value"
-//   help    string                  The help text (automatically Expand()ed) to display for this flag
-//   process func(string) os.Error   The function to call when this flag is processed
+//
+//	names []string                  These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	argname string                  The name of the argument in help, e.g. the "value" part of "--flag=value"
+//	help    string                  The help text (automatically Expand()ed) to display for this flag
+//	process func(string) os.Error   The function to call when this flag is processed
 func ReqArg(names []string, argname, help string, process func(string) error) {
 	addOpt(opt{names, "", help, true, &argname, process})
 }
 
 // Add a new flag that may optionally have an argument
 // Parameters:
-//   names []string                 These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     string                 The default of the argument in help, e.g. the "value" part of "--flag=value"
-//   help    string                 The help text (automatically Expand()ed) to display for this flag
-//   process func(string) os.Error  The function to call when this flag is processed with an argument
+//
+//	names []string                 These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     string                 The default of the argument in help, e.g. the "value" part of "--flag=value"
+//	help    string                 The help text (automatically Expand()ed) to display for this flag
+//	process func(string) os.Error  The function to call when this flag is processed with an argument
 func OptArg(names []string, def, help string, process func(string) error) {
 	addOpt(opt{names, "", help, false, &def, func(s string) error {
 		if s == "" {
@@ -240,11 +243,14 @@ func OptArg(names []string, def, help string, process func(string) error) {
 
 // Create a required-argument flag that only accepts the given set of values
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   vs    []string            These are the allowable values for the argument
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	vs    []string            These are the allowable values for the argument
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *string                   This points to a string whose value is updated as this flag is changed
+//
+//	*string                   This points to a string whose value is updated as this flag is changed
 func Alternatives(names, vs []string, help string) *string {
 	possibilities := "[" + vs[0]
 	for _, v := range vs[1:] {
@@ -256,12 +262,15 @@ func Alternatives(names, vs []string, help string) *string {
 
 // Create a required-argument flag that only accepts the given set of valuesand has a Help() label
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   vs    []string            These are the allowable values for the argument
-//   label   string            Label for display in Help()
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	vs    []string            These are the allowable values for the argument
+//	label   string            Label for display in Help()
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *string                   This points to a string whose value is updated as this flag is changed
+//
+//	*string                   This points to a string whose value is updated as this flag is changed
 func AlternativesWithLabel(names, vs []string, label string, help string) *string {
 	out := new(string)
 	*out = vs[0]
@@ -280,23 +289,29 @@ func AlternativesWithLabel(names, vs []string, label string, help string) *strin
 
 // Create a required-argument flag that accepts string values
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     string            Default value for the string and label in Help()
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     string            Default value for the string and label in Help()
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *string                   This points to a string whose value is updated as this flag is changed
+//
+//	*string                   This points to a string whose value is updated as this flag is changed
 func String(names []string, def string, help string) *string {
 	return StringWithLabel(names, def, def, help)
 }
 
 // Create a required-argument flag that accepts string values and has a Help() label
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     string            Default value for the string
-//   label   string            Label for display in Help()
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     string            Default value for the string
+//	label   string            Label for display in Help()
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *string                   This points to a string whose value is updated as this flag is changed
+//
+//	*string                   This points to a string whose value is updated as this flag is changed
 func StringWithLabel(names []string, def string, label string, help string) *string {
 	s := new(string)
 	*s = def
@@ -310,23 +325,29 @@ func StringWithLabel(names []string, def string, label string, help string) *str
 
 // Create a required-argument flag that accepts int values
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     int               Default value for the flag and label in Help()
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     int               Default value for the flag and label in Help()
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *int                      This points to an int whose value is updated as this flag is changed
+//
+//	*int                      This points to an int whose value is updated as this flag is changed
 func Int(names []string, def int, help string) *int {
 	return IntWithLabel(names, def, strconv.Itoa(def), help)
 }
 
 // Create a required-argument flag that accepts int values and has a Help() label
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     int               Default value for the flag
-//   label   string            Label for display in Help()
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     int               Default value for the flag
+//	label   string            Label for display in Help()
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *int                      This points to an int whose value is updated as this flag is changed
+//
+//	*int                      This points to an int whose value is updated as this flag is changed
 func IntWithLabel(names []string, def int, label string, help string) *int {
 	var err error
 	i := new(int)
@@ -341,11 +362,14 @@ func IntWithLabel(names []string, def int, label string, help string) *int {
 
 // Create a required-argument flag that accepts string values but allows more than one to be specified
 // Parameters:
-//   names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
-//   def     string            The argument name of the strings that are appended (e.g. the val in --opt=val)
-//   help    string            The help text (automatically Expand()ed) to display for this flag
+//
+//	names []string            These are the names that are accepted on the command-line for this flag, e.g. -v --verbose
+//	def     string            The argument name of the strings that are appended (e.g. the val in --opt=val)
+//	help    string            The help text (automatically Expand()ed) to display for this flag
+//
 // Returns:
-//   *[]string                 This points to a []string whose value will contain the strings passed as flags
+//
+//	*[]string                 This points to a []string whose value will contain the strings passed as flags
 func Strings(names []string, def string, help string) *[]string {
 	s := make([]string, 0, 1)
 	f := func(ss string) error {
@@ -362,12 +386,15 @@ func Strings(names []string, def string, help string) *[]string {
 // meaning of "NO" and "YES".
 //
 // Parameters:
-//   yes   []string            These flags set the boolean value to true (e.g. -i --install)
-//   no    []string            These flags set the boolean value to false (e.g. -I --no-install)
-//   helpyes string            The help text (automatically Expand()ed) to display for the "yes" flags
-//   helpno  string            The help text (automatically Expand()ed) to display for the "no" flags
+//
+//	yes   []string            These flags set the boolean value to true (e.g. -i --install)
+//	no    []string            These flags set the boolean value to false (e.g. -I --no-install)
+//	helpyes string            The help text (automatically Expand()ed) to display for the "yes" flags
+//	helpno  string            The help text (automatically Expand()ed) to display for the "no" flags
+//
 // Returns:
-//   *bool                     This points to a bool whose value is updated as this flag is changed
+//
+//	*bool                     This points to a bool whose value is updated as this flag is changed
 func Flag(yes []string, no []string, helpyes, helpno string) *bool {
 	b := new(bool)
 	y := func() error {
@@ -400,11 +427,14 @@ var Args = make([]string, 0, 4)
 
 // This parses the command-line arguments. It returns true if '--' was present.
 // Special flags are:
-//   --help               Display the generated help message (calls Help())
-//   --create-manpage     Display a manpage generated by the goopt library (uses Author, Suite, etc)
-//   --list-options       List all known flags
+//
+//	--help               Display the generated help message (calls Help())
+//	--create-manpage     Display a manpage generated by the goopt library (uses Author, Suite, etc)
+//	--list-options       List all known flags
+//
 // Arguments:
-//   extraopts func() []string     This function is called by --list-options and returns extra options to display
+//
+//	extraopts func() []string     This function is called by --list-options and returns extra options to display
 func Parse(extraopts func() []string) bool {
 	// First we'll add the "--help" option.
 	addOpt(opt{[]string{"--help", "-h"}, "", "Show usage message", false, nil,
