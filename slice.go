@@ -2,9 +2,9 @@ package goopt
 
 // Here we have some utility slice routines
 
-// append appends an element to a slice, in-place if possible, and
+// appendStr appends a string element to a slice, in-place if possible, and
 // expanding if needed.
-func append(slice *[]string, val string) {
+func appendStr(slice *[]string, val string) {
 	length := len(*slice)
 	if cap(*slice) == length {
 		// we need to expand

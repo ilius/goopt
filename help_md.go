@@ -18,11 +18,11 @@ func HelpMarkdown(optHelpFormatFunc func(string) string) string {
 			if index == 0 && o.allowsArg != nil {
 				name += "=" + *o.allowsArg
 			}
-			append(&names, "`"+name+"`")
+			names = append(names, "`"+name+"`")
 		}
 		for _, r_name := range o.shortnames {
 			name := string(r_name)
-			append(&names, "`-"+name+"`")
+			names = append(names, "`-"+name+"`")
 		}
 		fmt.Fprintln(buf, "## "+strings.Join(names, ", "))
 		fmt.Fprintf(buf, "%v\n\n", optHelpFormatFunc(o.help))

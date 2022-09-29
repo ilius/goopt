@@ -174,7 +174,7 @@ func addOpt(o opt) {
 		case n[1] != '-':
 			panic("Invalid long flag, doesn't start with '--':" + n)
 		default:
-			append(&newnames, n)
+			appendStr(&newnames, n)
 		}
 	}
 	o.names = newnames
@@ -373,7 +373,7 @@ func IntWithLabel(names []string, def int, label string, help string) *int {
 func Strings(names []string, def string, help string) *[]string {
 	s := make([]string, 0, 1)
 	f := func(ss string) error {
-		append(&s, ss)
+		appendStr(&s, ss)
 		return nil
 	}
 	ReqArg(names, def, help, f)
@@ -569,7 +569,7 @@ func Parse(extraopts func() []string) bool {
 				Args = cat(Args, os.Args[i:])
 				break
 			}
-			append(&Args, a)
+			appendStr(&Args, a)
 		}
 	}
 
