@@ -9,7 +9,7 @@ import (
 func HelpMarkdown(optHelpFormatFunc func(string) string) string {
 	buf := new(bytes.Buffer)
 	if len(opts) > 1 {
-		fmt.Fprintln(buf, "# Flags:\n")
+		fmt.Fprintf(buf, "# Flags:\n\n")
 	}
 	for _, o := range opts {
 		names := []string{}
