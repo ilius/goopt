@@ -19,7 +19,7 @@ var opts = make([]opt, 0, 8)
 
 // Redefine this function to change the way usage is printed
 var Usage = func() string {
-	programName := os.Args[0][strings.LastIndex(os.Args[0], "/")+1:]
+	programName := ProgPath[strings.LastIndex(ProgPath, "/")+1:]
 	usage := fmt.Sprintf("Usage of %s:\n", programName)
 	if Summary != "" {
 		usage += fmt.Sprintf("\t%s", Summary)
@@ -58,6 +58,8 @@ var RequireOrder = false
 // Variables for expansion using Expand(), which is automatically
 // called on help text for flags
 var Vars = make(map[string]string)
+
+var ProgPath string
 
 // Expand all variables in Vars within the given string.  This does
 // not assume any prefix or suffix that sets off a variable from the
@@ -441,7 +443,9 @@ func SetHelpFlags(flags []string) {
 // Arguments:
 //
 //	extraopts func() []string     This function is called by --list-options and returns extra options to display
-func Parse(extraopts func() []string) bool {
+func Parse(args []string, extraopts func() []string) bool {
+	ProgPath = args[0]
+
 	// First we'll add the "--help" option.
 	addOpt(opt{helpFlags, "", "Show usage message", false, nil,
 		func(string) error {
@@ -464,7 +468,7 @@ func Parse(extraopts func() []string) bool {
 	// Now let's check if --list-options was given, and if so, list all
 	// possible options.
 	if any(func(a string) bool { return match(a, longnames) == "--list-options" },
-		os.Args[1:]) {
+		args[1:]) {
 		if extraopts != nil {
 			for _, o := range extraopts() {
 				fmt.Println(o)
@@ -476,19 +480,19 @@ func Parse(extraopts func() []string) bool {
 	// Now let's check if --create-manpage was given, and if so, create a
 	// man page.
 	if any(func(a string) bool { return match(a, longnames) == "--create-manpage" },
-		os.Args[0:]) {
-		makeManpage()
+		args[0:]) {
+		makeManpage(args)
 		os.Exit(0)
 	}
 	skip := 1
 	earlyEnd := false
-	for i, a := range os.Args {
+	for i, a := range args {
 		if skip > 0 {
 			skip--
 			continue
 		}
 		if a == "--" {
-			Args = cat(Args, os.Args[i+1:])
+			Args = cat(Args, args[i+1:])
 			earlyEnd = true
 			break
 		}
@@ -501,13 +505,13 @@ func Parse(extraopts func() []string) bool {
 							switch {
 							case o.allowsArg != nil &&
 								//	j+1 == len(a)-1 &&
-								len(os.Args) > i+skip+1 &&
-								len(os.Args[i+skip+1]) >= 1 &&
-								(os.Args[i+skip+1] == "-" ||
-									os.Args[i+skip+1][0] != '-'):
+								len(args) > i+skip+1 &&
+								len(args[i+skip+1]) >= 1 &&
+								(args[i+skip+1] == "-" ||
+									args[i+skip+1][0] != '-'):
 								// this last one prevents options from taking options as arguments...
 								failnoting("Error in flag -"+string(c)+":",
-									o.process(os.Args[i+skip+1]))
+									o.process(args[i+skip+1]))
 								skip++ // skip next arg in looking for flags...
 							case o.needsArg:
 								fmt.Printf("Flag -%c requires argument!\n", c)
@@ -528,7 +532,7 @@ func Parse(extraopts func() []string) bool {
 			} // Loop over the characters in this short argument
 		} else if len(a) > 2 && a[0] == '-' && a[1] == '-' {
 			// Looking for a long flag.  Any unique prefix is accepted!
-			aflag := match(os.Args[i], longnames)
+			aflag := match(args[i], longnames)
 			foundone := false
 			if aflag == "" {
 				failnoting("Bad flag:", errors.New(a))
@@ -545,10 +549,10 @@ func Parse(extraopts func() []string) bool {
 							}
 							failnoting("Error in flag "+a+":",
 								o.process(a[x+1:len(a)]))
-						} else if o.allowsArg != nil && len(os.Args) > i+1 && len(os.Args[i+1]) >= 1 && (os.Args[i+1] == "-" || os.Args[i+1][0] != '-') {
+						} else if o.allowsArg != nil && len(args) > i+1 && len(args[i+1]) >= 1 && (args[i+1] == "-" || args[i+1][0] != '-') {
 							// last check sees if the next arg looks like a flag
 							failnoting("Error in flag "+n+":",
-								o.process(os.Args[i+1]))
+								o.process(args[i+1]))
 							skip++ // skip next arg in looking for flags...
 						} else if o.needsArg {
 							fmt.Println("Flag", a, "requires argument!")
@@ -566,7 +570,7 @@ func Parse(extraopts func() []string) bool {
 			}
 		} else {
 			if RequireOrder {
-				Args = cat(Args, os.Args[i:])
+				Args = cat(Args, args[i:])
 				break
 			}
 			appendStr(&Args, a)
@@ -598,8 +602,8 @@ func match(x string, allflags []string) string {
 	return out
 }
 
-func makeManpage() {
-	_, progname := path.Split(os.Args[0])
+func makeManpage(args []string) {
+	_, progname := path.Split(args[0])
 	version := Version
 	if Suite != "" {
 		version = Suite + " " + version
