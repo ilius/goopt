@@ -14,12 +14,14 @@ var amVerbose = goopt.Flag([]string{"--verbose"}, []string{},
 	"output verbosely", "")
 var amHappy = goopt.Flag([]string{"-h", "--happy"}, []string{"-u", "--unhappy", "--sad"}, "be happy", "be unhappy")
 
-var foo = goopt.String([]string{"--name"}, "anonymous", "pick your name")
-var bar = goopt.String([]string{"-b"}, "BOO!", "pick your scary sound")
-var baz = goopt.String([]string{"-o"}, "", "test whether a silent default works")
-var speed = goopt.Alternatives([]string{"--speed", "--velocity"},
-	[]string{"slow", "medium", "fast"},
-	"set the speed")
+var (
+	foo   = goopt.String([]string{"--name"}, "anonymous", "pick your name")
+	bar   = goopt.String([]string{"-b"}, "BOO!", "pick your scary sound")
+	baz   = goopt.String([]string{"-o"}, "", "test whether a silent default works")
+	speed = goopt.Alternatives([]string{"--speed", "--velocity"},
+		[]string{"slow", "medium", "fast"},
+		"set the speed")
+)
 
 var words = goopt.Strings([]string{"--word", "--saying", "-w", "-s"}, "word",
 	"specify a word to speak")

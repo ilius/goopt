@@ -447,18 +447,23 @@ func Parse(args []string, extraopts func() []string) bool {
 	ProgPath = args[0]
 
 	// First we'll add the "--help" option.
-	addOpt(opt{helpFlags, "", "Show usage message", false, nil,
+	addOpt(opt{
+		helpFlags, "", "Show usage message", false, nil,
 		func(string) error {
 			fmt.Println(Usage())
 			os.Exit(0)
 			return nil
-		}})
-	addOpt(opt{[]string{"--version"}, "", "Show version", false, nil,
+		},
+	})
+	addOpt(opt{
+		[]string{"--version"},
+		"", "Show version", false, nil,
 		func(string) error {
 			fmt.Println(Version)
 			os.Exit(0)
 			return nil
-		}})
+		},
+	})
 	// Let's now tally all the long option names, so we can use this to
 	// find "unique" options.
 	longnames := []string{"--list-options", "--create-manpage"}
@@ -548,7 +553,7 @@ func Parse(args []string, extraopts func() []string) bool {
 								os.Exit(1)
 							}
 							failnoting("Error in flag "+a+":",
-								o.process(a[x+1:len(a)]))
+								o.process(a[x+1:]))
 						} else if o.allowsArg != nil && len(args) > i+1 && len(args[i+1]) >= 1 && (args[i+1] == "-" || args[i+1][0] != '-') {
 							// last check sees if the next arg looks like a flag
 							failnoting("Error in flag "+n+":",
