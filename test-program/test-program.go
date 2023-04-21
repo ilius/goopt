@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	goopt "github.com/ilius/goopt"
@@ -27,7 +28,7 @@ var width = goopt.Int([]string{"-l", "--length"}, 1, "number of ?s")
 
 func main() {
 	goopt.Summary = "silly test program"
-	goopt.Parse(nil)
+	goopt.Parse(os.Args, nil)
 	if *amVerbose {
 		fmt.Println("I am verbose.")
 	}

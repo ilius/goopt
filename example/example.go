@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	goopt "github.com/ilius/goopt"
 )
@@ -39,7 +40,7 @@ func main() {
 	}
 	goopt.Version = "1.0"
 	goopt.Summary = "goopt demonstration program"
-	goopt.Parse(nil)
+	goopt.Parse(os.Args, nil)
 	defer fmt.Print("\033[0m") // defer resetting the terminal to default colors
 	switch *color {
 	case "default":
