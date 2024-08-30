@@ -183,9 +183,7 @@ func addOpt(o opt) {
 	if len(opts) == cap(opts) { // reallocate
 		// Allocate double what's needed, for future growth.
 		newOpts := make([]opt, len(opts), len(opts)*2)
-		for i, oo := range opts {
-			newOpts[i] = oo
-		}
+		copy(newOpts, opts)
 		opts = newOpts
 	}
 	opts = opts[0 : 1+len(opts)]
@@ -468,12 +466,14 @@ func Parse(args []string, extraopts func() []string) bool {
 	// find "unique" options.
 	longnames := []string{"--list-options", "--create-manpage"}
 	for _, o := range opts {
-		longnames = cat(longnames, o.names)
+		longnames = append(longnames, o.names...)
 	}
 	// Now let's check if --list-options was given, and if so, list all
 	// possible options.
-	if any(func(a string) bool { return match(a, longnames) == "--list-options" },
-		args[1:]) {
+	if any(
+		func(a string) bool { return match(a, longnames) == "--list-options" },
+		args[1:],
+	) {
 		if extraopts != nil {
 			for _, o := range extraopts() {
 				fmt.Println(o)
@@ -484,8 +484,10 @@ func Parse(args []string, extraopts func() []string) bool {
 	}
 	// Now let's check if --create-manpage was given, and if so, create a
 	// man page.
-	if any(func(a string) bool { return match(a, longnames) == "--create-manpage" },
-		args[0:]) {
+	if any(
+		func(a string) bool { return match(a, longnames) == "--create-manpage" },
+		args[0:],
+	) {
 		makeManpage(args)
 		os.Exit(0)
 	}
@@ -497,7 +499,7 @@ func Parse(args []string, extraopts func() []string) bool {
 			continue
 		}
 		if a == "--" {
-			Args = cat(Args, args[i+1:])
+			Args = append(Args, args[i+1:]...)
 			earlyEnd = true
 			break
 		}
@@ -575,10 +577,10 @@ func Parse(args []string, extraopts func() []string) bool {
 			}
 		} else {
 			if RequireOrder {
-				Args = cat(Args, args[i:])
+				Args = append(Args, args[i:]...)
 				break
 			}
-			appendStr(&Args, a)
+			Args = append(Args, a)
 		}
 	}
 
