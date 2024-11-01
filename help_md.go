@@ -13,8 +13,7 @@ func HelpMarkdown(optHelpFormatFunc func(string) string) string {
 	}
 	for _, o := range opts {
 		names := []string{}
-		for index, r_name := range o.names {
-			name := string(r_name)
+		for index, name := range o.names {
 			if index == 0 && o.allowsArg != nil {
 				name += "=" + *o.allowsArg
 			}
